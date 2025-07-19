@@ -67,6 +67,8 @@ ChatGPT Clone/
 - Profile data loading/saving
 - Profile picture upload
 - User preferences management
+- Theme toggle functionality
+- Dark/Light mode switching
 
 ## Key Features
 
@@ -109,7 +111,8 @@ ChatGPT Clone/
 - **Context awareness**: Maintains conversation context
 - **Model selection**: Switch between AI models
 - **Chat history**: Persistent chat storage
-- **Dark theme**: Professional dark UI
+- **Dark/Light theme**: Toggle between dark and light modes
+- **Theme persistence**: Theme preference saved and restored
 
 ## Development Notes
 

@@ -12,10 +12,19 @@ function loadProfile() {
         const usernameEl = document.getElementById('username');
         const preferredStyleEl = document.getElementById('preferredStyle');
         const currentNameEl = document.getElementById('currentName');
+        const themeToggleEl = document.getElementById('themeToggle');
         
         if (usernameEl) usernameEl.value = profile.name || '';
         if (preferredStyleEl) preferredStyleEl.value = profile.chatStyle || 'friendly';
         if (currentNameEl) currentNameEl.textContent = profile.name || 'User';
+        
+        // Load theme preference
+        const isLightMode = profile.theme === 'light';
+        if (themeToggleEl) {
+            themeToggleEl.checked = isLightMode;
+        }
+        updateThemeToggleText(isLightMode);
+        applyTheme(profile.theme || 'dark');
         
         if (profile.profilePicture) {
             currentProfilePicture = profile.profilePicture;
@@ -69,15 +78,22 @@ function saveProfile(event) {
     
     const usernameEl = document.getElementById('username');
     const preferredStyleEl = document.getElementById('preferredStyle');
+    const themeToggleEl = document.getElementById('themeToggle');
+    
+    const theme = themeToggleEl && themeToggleEl.checked ? 'light' : 'dark';
     
     const profile = {
         name: (usernameEl ? usernameEl.value.trim() : '') || 'User',
         chatStyle: preferredStyleEl ? preferredStyleEl.value : 'friendly',
+        theme: theme,
         profilePicture: currentProfilePicture,
         lastUpdated: Date.now()
     };
 
     localStorage.setItem('chatgpt-user-profile', JSON.stringify(profile));
+    
+    // Apply theme immediately
+    applyTheme(theme);
     
     // Show success message
     const successMsg = document.getElementById('successMessage');
@@ -103,6 +119,7 @@ function setupProfileEventListeners() {
     const profilePicInput = document.getElementById('profilePicInput');
     const backBtn = document.getElementById('backBtn');
     const uploadOverlay = document.getElementById('uploadOverlay');
+    const themeToggle = document.getElementById('themeToggle');
     
     if (profileForm) {
         profileForm.addEventListener('submit', saveProfile);
@@ -123,6 +140,32 @@ function setupProfileEventListeners() {
             }
         });
     }
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('change', handleThemeToggle);
+    }
+}
+
+// Theme Management Functions
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
+    }
+}
+
+function updateThemeToggleText(isLightMode) {
+    const themeToggleText = document.getElementById('themeToggleText');
+    if (themeToggleText) {
+        themeToggleText.textContent = isLightMode ? 'Light Mode' : 'Dark Mode';
+    }
+}
+
+function handleThemeToggle(event) {
+    const isLightMode = event.target.checked;
+    updateThemeToggleText(isLightMode);
+    applyTheme(isLightMode ? 'light' : 'dark');
 }
 
 // Initialize profile page

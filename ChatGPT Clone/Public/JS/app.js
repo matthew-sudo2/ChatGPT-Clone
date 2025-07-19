@@ -17,13 +17,18 @@ function loadUserProfile() {
         userProfile = JSON.parse(savedProfile);
         console.log('Loaded user profile:', userProfile); // Debug log
         updateUserDisplay();
+        
+        // Apply saved theme
+        applyTheme(userProfile.theme || 'dark');
     } else {
         userProfile = {
             name: 'User',
             chatStyle: 'friendly',
+            theme: 'dark',
             profilePicture: null
         };
         console.log('Created default user profile:', userProfile); // Debug log
+        applyTheme('dark');
     }
 }
 
@@ -49,6 +54,18 @@ function updateUserDisplay() {
 
 function openProfile() {
     window.location.href = 'profile.html';
+}
+
+// ====================================
+// THEME MANAGEMENT
+// ====================================
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
+    }
 }
 
 // ====================================
