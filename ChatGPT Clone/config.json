@@ -1,0 +1,55 @@
+{
+  "server": {
+    "port": 8001,
+    "host": "localhost",
+    "timeout": 60
+  },
+  "ollama": {
+    "host": "localhost",
+    "port": 11434,
+    "default_model": "gemma3",
+    "models": {
+      "gemma3": {
+        "name": "Gemma 3",
+        "description": "Fast and efficient",
+        "options": {
+          "temperature": 0.7,
+          "top_p": 0.9,
+          "repeat_penalty": 1.1,
+          "num_ctx": 4096,
+          "num_predict": 512
+        }
+      },
+      "deepseek-r1": {
+        "name": "DeepSeek R1",
+        "description": "Advanced reasoning",
+        "options": {
+          "temperature": 0.8,
+          "top_p": 0.95,
+          "repeat_penalty": 1.0,
+          "num_ctx": 8192,
+          "num_predict": 1024
+        }
+      }
+    }
+  },
+  "features": {
+    "streaming": true,
+    "vision": true,
+    "user_profiles": true,
+    "chat_history": true,
+    "max_image_size": 10485760,
+    "max_chat_history": 50
+  },
+  "ui": {
+    "theme": "dark",
+    "sidebar_width": 260,
+    "message_max_width": 768,
+    "typing_animation": true
+  },
+  "logging": {
+    "level": "INFO",
+    "log_requests": true,
+    "log_responses": false
+  }
+}

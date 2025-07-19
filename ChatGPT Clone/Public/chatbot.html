@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ChatGPT</title>
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<link rel="stylesheet" href="CSS/main.css">
+	</head>
+	</head>
+	<body>
+		<div class="app-container">
+			<!-- Sidebar -->
+			<div class="sidebar">
+				<button class="new-chat-btn">
+					<i class="fas fa-plus"></i>
+					New chat
+				</button>
+				
+				<div class="chat-history" id="chatHistory">
+					<!-- Chat history will be populated dynamically -->
+				</div>
+				
+				<div class="user-section">
+					<div class="user-info">
+						<div class="user-avatar-small" id="userAvatarSmall">
+							<i class="fas fa-user"></i>
+						</div>
+						<div class="user-details">
+							<span id="userName">User</span>
+							<div class="user-status">Online</div>
+						</div>
+					</div>
+					<button class="profile-btn" title="Edit Profile">
+						<i class="fas fa-cog"></i>
+					</button>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div class="main-content">
+				<div class="chat-header">
+					<div class="model-selector">
+						<span id="currentModel">Gemma 3</span>
+						<i class="fas fa-chevron-down" id="dropdownIcon"></i>
+						<div class="model-dropdown" id="modelDropdown">
+							<button class="model-option active" data-model="gemma3" data-name="Gemma 3">
+								<strong>Gemma 3</strong>
+								<div style="font-size: 12px; color: #888;">Fast and efficient</div>
+							</button>
+							<button class="model-option" data-model="deepseek-r1" data-name="DeepSeek R1">
+								<strong>DeepSeek R1</strong>
+								<div style="font-size: 12px; color: #888;">Advanced reasoning</div>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="chat-messages" id="chatMessages">
+					<!-- Messages will be added here -->
+				</div>
+
+				<div class="input-area">
+					<div class="input-container">
+						<div class="input-wrapper">
+							<button class="image-upload-btn" title="Upload image">
+								<i class="fas fa-image"></i>
+							</button>
+							<textarea 
+								id="userInput" 
+								placeholder="Message ChatGPT..." 
+								rows="1"></textarea>
+							<button class="send-button" id="sendButton">
+								<svg viewBox="0 0 24 24" fill="currentColor">
+									<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+								</svg>
+							</button>
+						</div>
+						<input type="file" id="imageInput" accept="image/*" style="display: none;">
+						<div id="imagePreview" style="display: none;">
+							<div class="image-preview-container">
+								<img id="previewImage" alt="Preview">
+								<button class="remove-image-btn">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- JavaScript Files -->
+		<script src="JS/model-selector.js"></script>
+		<script src="JS/ui-handlers.js"></script>
+		<script src="JS/app.js"></script>
+	</body>
+</html>

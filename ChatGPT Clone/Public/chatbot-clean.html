@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ChatGPT</title>
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				background: #212121;
+				color: #ffffff;
+				height: 100vh;
+				overflow: hidden;
+			}
+
+			.app-container {
+				display: flex;
+				height: 100vh;
+			}
+
+			/* Sidebar */
+			.sidebar {
+				width: 260px;
+				background: #171717;
+				border-right: 1px solid #363636;
+				display: flex;
+				flex-direction: column;
+				padding: 12px;
+			}
+
+			.new-chat-btn {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 14px 16px;
+				margin-bottom: 12px;
+				background: transparent;
+				border: 1px solid #4a4a4a;
+				border-radius: 8px;
+				color: #ffffff;
+				cursor: pointer;
+				font-size: 14px;
+				font-weight: 500;
+				transition: all 0.2s ease;
+			}
+
+			.new-chat-btn:hover {
+				background: #2a2a2a;
+				border-color: #5a5a5a;
+			}
+
+			.chat-history {
+				flex: 1;
+				overflow-y: auto;
+				margin-bottom: 20px;
+			}
+
+			.chat-item {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 12px 16px;
+				margin: 2px 0;
+				border-radius: 8px;
+				cursor: pointer;
+				font-size: 14px;
+				color: #e5e5e5;
+				transition: all 0.2s ease;
+				position: relative;
+			}
+
+			.chat-item:hover {
+				background: #2a2a2a;
+			}
+
+			.chat-item.active {
+				background: #2a2a2a;
+				border: 1px solid #4a4a4a;
+			}
+
+			.chat-title {
+				flex: 1;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.delete-chat-btn {
+				background: none;
+				border: none;
+				color: #8e8ea0;
+				cursor: pointer;
+				padding: 4px;
+				border-radius: 4px;
+				transition: all 0.2s;
+				opacity: 0;
+				font-size: 12px;
+			}
+
+			.chat-item:hover .delete-chat-btn {
+				opacity: 1;
+			}
+
+			.delete-chat-btn:hover {
+				background: #ef4444;
+				color: white;
+			}
+
+			.user-section {
+				border-top: 1px solid #363636;
+				padding: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				color: #e5e5e5;
+				font-size: 14px;
+				background: #1a1a1a;
+				margin-top: auto;
+			}
+
+			.user-info {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				cursor: pointer;
+				padding: 8px;
+				border-radius: 8px;
+				transition: background 0.2s;
+				flex: 1;
+			}
+
+			.user-info:hover {
+				background: #2a2a2a;
+			}
+
+			.user-avatar-small {
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				background: #10a37f;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 14px;
+				color: white;
+				overflow: hidden;
+			}
+
+			.user-avatar-small img {
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				object-fit: cover;
+			}
+
+			.user-details {
+				flex: 1;
+			}
+
+			.user-status {
+				font-size: 12px;
+				color: #10a37f;
+			}
+
+			.profile-btn {
+				background: transparent;
+				border: none;
+				color: #8e8ea0;
+				cursor: pointer;
+				padding: 8px;
+				border-radius: 6px;
+				transition: all 0.2s;
+				font-size: 16px;
+			}
+
+			.profile-btn:hover {
+				background: #2a2a2a;
+				color: #ffffff;
+			}
+
+			/* Main Chat Area */
+			.main-content {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				background: #212121;
+			}
+
+			.chat-header {
+				padding: 16px 24px;
+				border-bottom: 1px solid #363636;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #212121;
+			}
+
+			.model-selector {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				background: transparent;
+				border: none;
+				color: #ffffff;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				padding: 12px 16px;
+				border-radius: 8px;
+				transition: background 0.2s ease;
+				position: relative;
+			}
+
+			.model-selector:hover {
+				background: #2a2a2a;
+			}
+
+			.model-dropdown {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				background: #2a2a2a;
+				border: 1px solid #4a4a4a;
+				border-radius: 8px;
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+				z-index: 1000;
+				display: none;
+				margin-top: 4px;
+			}
+
+			.model-dropdown.show {
+				display: block;
+			}
+
+			.model-option {
+				padding: 12px 16px;
+				cursor: pointer;
+				transition: background 0.2s ease;
+				border: none;
+				background: transparent;
+				color: #ffffff;
+				width: 100%;
+				text-align: left;
+				font-size: 14px;
+			}
+
+			.model-option:hover {
+				background: #3a3a3a;
+			}
+
+			.model-option.active {
+				background: #10a37f;
+			}
+
+			.model-option:first-child {
+				border-radius: 8px 8px 0 0;
+			}
+
+			.model-option:last-child {
+				border-radius: 0 0 8px 8px;
+			}
+
+			.chat-messages {
+				flex: 1;
+				overflow-y: auto;
+				padding: 0;
+			}
+
+			.message-container {
+				width: 100%;
+				border-bottom: 1px solid #363636;
+			}
+
+			.message {
+				max-width: 768px;
+				margin: 0 auto;
+				padding: 24px;
+				display: flex;
+				gap: 24px;
+			}
+
+			.user-message-container {
+				background: #212121;
+			}
+
+			.assistant-message-container {
+				background: #2a2a2a;
+			}
+
+			.message-avatar {
+				width: 30px;
+				height: 30px;
+				border-radius: 2px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+				flex-shrink: 0;
+			}
+
+			.user-avatar {
+				background: #10a37f;
+				color: white;
+				font-size: 14px;
+			}
+
+			.assistant-avatar {
+				background: #ab68ff;
+				color: white;
+				font-size: 14px;
+			}
+
+			.message-content {
+				flex: 1;
+				line-height: 1.6;
+				font-size: 16px;
+			}
+
+			.message-content p {
+				margin-bottom: 16px;
+			}
+
+			.message-content p:last-child {
+				margin-bottom: 0;
+			}
+
+			.message-content h1, .message-content h2, .message-content h3 {
+				margin: 16px 0 8px 0;
+				color: #ffffff;
+			}
+
+			.message-content ul, .message-content ol {
+				margin: 16px 0;
+				padding-left: 24px;
+			}
+
+			.message-content li {
+				margin-bottom: 8px;
+			}
+
+			.message-content code {
+				background: #1a1b23;
+				padding: 2px 6px;
+				border-radius: 4px;
+				font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+				font-size: 14px;
+			}
+
+			.message-content pre {
+				background: #1a1b23;
+				padding: 16px;
+				border-radius: 8px;
+				overflow-x: auto;
+				margin: 16px 0;
+				border: 1px solid #4d4d4f;
+			}
+
+			.message-content pre code {
+				background: none;
+				padding: 0;
+			}
+
+			/* Input Area */
+			.input-area {
+				padding: 24px;
+				background: #212121;
+			}
+
+			.input-container {
+				max-width: 768px;
+				margin: 0 auto;
+				position: relative;
+			}
+
+			.input-wrapper {
+				background: #2a2a2a;
+				border: 1px solid #4a4a4a;
+				border-radius: 12px;
+				display: flex;
+				align-items: flex-end;
+				min-height: 52px;
+				max-height: 200px;
+				overflow: hidden;
+				transition: border-color 0.2s ease;
+			}
+
+			.input-wrapper:focus-within {
+				border-color: #10a37f;
+				box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
+			}
+
+			#userInput {
+				flex: 1;
+				background: transparent;
+				border: none;
+				outline: none;
+				color: #ffffff;
+				font-size: 16px;
+				line-height: 1.5;
+				padding: 12px 16px;
+				resize: none;
+				max-height: 168px;
+				overflow-y: auto;
+			}
+
+			#userInput::placeholder {
+				color: #a0a0a0;
+			}
+
+			.send-button {
+				background: #10a37f;
+				border: none;
+				border-radius: 6px;
+				width: 32px;
+				height: 32px;
+				margin: 10px 10px 10px 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: background-color 0.2s;
+				flex-shrink: 0;
+			}
+
+			.send-button:hover:not(:disabled) {
+				background: #0d8f6f;
+			}
+
+			.send-button:disabled {
+				background: #4a4a4a;
+				cursor: not-allowed;
+			}
+
+			.send-button svg {
+				width: 16px;
+				height: 16px;
+				color: #ffffff;
+			}
+
+			/* Image Upload Styles */
+			.image-upload-btn {
+				background: transparent;
+				border: none;
+				color: #8e8ea0;
+				cursor: pointer;
+				padding: 8px;
+				border-radius: 6px;
+				transition: all 0.2s;
+				margin: 8px 4px 8px 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+			}
+
+			.image-upload-btn:hover {
+				background: #3a3a3a;
+				color: #ffffff;
+			}
+
+			.image-preview-container {
+				position: relative;
+				display: inline-block;
+				margin: 8px 0;
+				border-radius: 8px;
+				overflow: hidden;
+				border: 1px solid #4a4a4a;
+			}
+
+			#previewImage {
+				max-width: 200px;
+				max-height: 200px;
+				display: block;
+				border-radius: 8px;
+			}
+
+			.remove-image-btn {
+				position: absolute;
+				top: 4px;
+				right: 4px;
+				background: rgba(0, 0, 0, 0.7);
+				border: none;
+				border-radius: 50%;
+				color: white;
+				width: 24px;
+				height: 24px;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 12px;
+				transition: background 0.2s;
+			}
+
+			.remove-image-btn:hover {
+				background: #ef4444;
+			}
+
+			/* Message with image styles */
+			.message-image {
+				max-width: 300px;
+				max-height: 300px;
+				border-radius: 8px;
+				margin: 8px 0;
+				border: 1px solid #4a4a4a;
+			}
+
+			/* Loading Animation */
+			.typing-indicator {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				color: #8e8ea0;
+			}
+
+			.typing-dot {
+				width: 4px;
+				height: 4px;
+				border-radius: 50%;
+				background: #8e8ea0;
+				animation: typing 1.4s infinite ease-in-out;
+			}
+
+			.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+			.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+			@keyframes typing {
+				0%, 80%, 100% {
+					transform: scale(0.8);
+					opacity: 0.5;
+				}
+				40% {
+					transform: scale(1);
+					opacity: 1;
+				}
+			}
+
+			/* Scrollbar */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+
+			::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			::-webkit-scrollbar-thumb {
+				background: #4d4d4f;
+				border-radius: 4px;
+			}
+
+			::-webkit-scrollbar-thumb:hover {
+				background: #6b6b6b;
+			}
+
+			/* Responsive */
+			@media (max-width: 768px) {
+				.sidebar {
+					display: none;
+				}
+				
+				.message {
+					padding: 16px;
+					gap: 16px;
+				}
+				
+				.input-area {
+					padding: 16px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="app-container">
+			<!-- Sidebar -->
+			<div class="sidebar">
+				<button class="new-chat-btn">
+					<i class="fas fa-plus"></i>
+					New chat
+				</button>
+				
+				<div class="chat-history" id="chatHistory">
+					<!-- Chat history will be populated dynamically -->
+				</div>
+				
+				<div class="user-section">
+					<div class="user-info">
+						<div class="user-avatar-small" id="userAvatarSmall">
+							<i class="fas fa-user"></i>
+						</div>
+						<div class="user-details">
+							<span id="userName">User</span>
+							<div class="user-status">Online</div>
+						</div>
+					</div>
+					<button class="profile-btn" title="Edit Profile">
+						<i class="fas fa-cog"></i>
+					</button>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div class="main-content">
+				<div class="chat-header">
+					<div class="model-selector">
+						<span id="currentModel">Gemma 3</span>
+						<i class="fas fa-chevron-down" id="dropdownIcon"></i>
+						<div class="model-dropdown" id="modelDropdown">
+							<button class="model-option active" data-model="gemma3" data-name="Gemma 3">
+								<strong>Gemma 3</strong>
+								<div style="font-size: 12px; color: #888;">Fast and efficient</div>
+							</button>
+							<button class="model-option" data-model="deepseek-r1" data-name="DeepSeek R1">
+								<strong>DeepSeek R1</strong>
+								<div style="font-size: 12px; color: #888;">Advanced reasoning</div>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="chat-messages" id="chatMessages">
+					<!-- Messages will be added here -->
+				</div>
+
+				<div class="input-area">
+					<div class="input-container">
+						<div class="input-wrapper">
+							<button class="image-upload-btn" title="Upload image">
+								<i class="fas fa-image"></i>
+							</button>
+							<textarea 
+								id="userInput" 
+								placeholder="Message ChatGPT..." 
+								rows="1"></textarea>
+							<button class="send-button" id="sendButton">
+								<svg viewBox="0 0 24 24" fill="currentColor">
+									<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+								</svg>
+							</button>
+						</div>
+						<input type="file" id="imageInput" accept="image/*" style="display: none;">
+						<div id="imagePreview" style="display: none;">
+							<div class="image-preview-container">
+								<img id="previewImage" alt="Preview">
+								<button class="remove-image-btn">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- JavaScript Files -->
+		<script src="js/model-selector.js"></script>
+		<script src="js/ui-handlers.js"></script>
+		<script src="js/app.js"></script>
+	</body>
+</html>
