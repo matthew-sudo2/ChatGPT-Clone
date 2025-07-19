@@ -270,34 +270,48 @@ body {
 
 .message-container {
     width: 100%;
-    border-bottom: 1px solid #363636;
+    padding: 16px 24px;
 }
 
 .message {
     max-width: 768px;
     margin: 0 auto;
-    padding: 24px;
     display: flex;
-    gap: 24px;
+    gap: 16px;
+    align-items: flex-start;
 }
 
 .user-message-container {
-    background: #212121;
+    background: transparent;
+}
+
+.user-message-container .message {
+    flex-direction: row-reverse;
+    max-width: 768px;
+    margin: 0 auto;
 }
 
 .assistant-message-container {
-    background: #2a2a2a;
+    background: transparent;
 }
 
 .message-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 2px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
     flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.message-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .user-avatar {
@@ -318,8 +332,30 @@ body {
     font-size: 16px;
 }
 
+/* User message bubble styling - compact and more rounded */
+.user-message-container .message-content {
+    background: #4a4a4a;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border-bottom-right-radius: 4px;
+    max-width: fit-content;
+    word-wrap: break-word;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+/* Assistant message content styling - no bubble, plain text */
+.assistant-message-container .message-content {
+    background: transparent;
+    color: #ffffff;
+    padding: 0;
+    border-radius: 0;
+    margin-right: 8px;
+}
+
 .message-content p {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .message-content p:last-child {
@@ -327,39 +363,89 @@ body {
 }
 
 .message-content h1, .message-content h2, .message-content h3 {
-    margin: 16px 0 8px 0;
-    color: #ffffff;
+    margin: 12px 0 6px 0;
+    color: inherit;
 }
 
 .message-content ul, .message-content ol {
-    margin: 16px 0;
-    padding-left: 24px;
+    margin: 12px 0;
+    padding-left: 20px;
 }
 
 .message-content li {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+}
+
+/* User message content specific styling */
+.user-message-container .message-content h1,
+.user-message-container .message-content h2, 
+.user-message-container .message-content h3 {
+    color: #ffffff;
+}
+
+/* Assistant message content specific styling */
+.assistant-message-container .message-content h1,
+.assistant-message-container .message-content h2,
+.assistant-message-container .message-content h3 {
+    color: #ffffff;
 }
 
 .message-content code {
-    background: #1a1b23;
+    background: rgba(0, 0, 0, 0.3);
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
     font-size: 14px;
+    color: #ffffff;
 }
 
 .message-content pre {
-    background: #1a1b23;
-    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
     border-radius: 8px;
     overflow-x: auto;
-    margin: 16px 0;
-    border: 1px solid #4d4d4f;
+    margin: 12px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .message-content pre code {
     background: none;
     padding: 0;
+    color: #ffffff;
+}
+
+/* User message code styling */
+.user-message-container .message-content code,
+.user-message-container .message-content pre {
+    background: rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+}
+
+/* Assistant message code styling */  
+.assistant-message-container .message-content code,
+.assistant-message-container .message-content pre {
+    background: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+}
+
+/* Message images styling */
+.message-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    object-fit: cover;
+}
+
+/* Typewriter cursor styling */
+.typewriter-cursor {
+    animation: blink 1s infinite;
+    color: #ffffff;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 /* Input Area */
@@ -437,6 +523,30 @@ body {
     width: 16px;
     height: 16px;
     color: #ffffff;
+}
+
+.cancel-button {
+    background: #ef4444;
+    border: none;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    margin: 10px 5px 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.cancel-button:hover {
+    background: #dc2626;
+}
+
+.cancel-button i {
+    color: #ffffff;
+    font-size: 14px;
 }
 
 /* Image Upload Styles */
@@ -555,19 +665,180 @@ body {
     background: #6b6b6b;
 }
 
-/* Responsive */
+/* Responsive Design - Mobile First */
 @media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+    
     .sidebar {
-        display: none;
+        width: 100%;
+        height: auto;
+        max-height: 40vh;
+        padding: 8px;
+        border-right: none;
+        border-bottom: 1px solid #363636;
+        overflow-y: auto;
+    }
+    
+    .main-content {
+        flex: 1;
+        min-height: 0;
     }
     
     .message {
-        padding: 16px;
-        gap: 16px;
+        padding: 12px 16px;
+        gap: 12px;
+    }
+    
+    .message-container {
+        padding: 8px 16px;
     }
     
     .input-area {
-        padding: 16px;
+        padding: 12px;
+    }
+    
+    .input-container {
+        max-width: 100%;
+    }
+    
+    .input-wrapper {
+        min-height: 44px;
+    }
+    
+    #userInput {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 10px 12px;
+    }
+    
+    .message-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    
+    /* User message bubble adjustments for mobile */
+    .user-message-container .message-content {
+        max-width: 80vw;
+        font-size: 15px;
+        padding: 8px 12px;
+    }
+    
+    .assistant-message-container .message-content {
+        font-size: 15px;
+    }
+    
+    /* Mobile sidebar toggle */
+    .mobile-sidebar-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+        background: #2a2a2a;
+        border: none;
+        color: white;
+        padding: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    
+    .sidebar.collapsed {
+        display: none;
+    }
+    
+    .main-content.expanded {
+        width: 100%;
+    }
+    
+    /* Touch-friendly buttons */
+    .send-button {
+        width: 36px;
+        height: 36px;
+        margin: 8px;
+    }
+    
+    .new-chat-btn {
+        padding: 12px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+    
+    .chat-item {
+        padding: 12px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+    
+    /* Prevent horizontal scroll on mobile */
+    .chat-messages {
+        overflow-x: hidden;
+    }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .sidebar {
+        width: 240px;
+    }
+    
+    .message {
+        padding: 16px 20px;
+    }
+    
+    .user-message-container .message-content {
+        max-width: 70vw;
+    }
+}
+
+/* Very small mobile devices */
+@media (max-width: 480px) {
+    .message-container {
+        padding: 6px 12px;
+    }
+    
+    .message {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    
+    .message-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+    
+    .user-message-container .message-content {
+        max-width: 85vw;
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+    
+    .assistant-message-container .message-content {
+        font-size: 14px;
+    }
+    
+    .input-area {
+        padding: 8px;
+    }
+    
+    #userInput {
+        font-size: 16px;
+        padding: 8px 10px;
+    }
+}
+
+/* Landscape mobile orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+    .sidebar {
+        max-height: 30vh;
+    }
+    
+    .app-container {
+        height: 100vh;
     }
 }
 
@@ -669,15 +940,15 @@ body.light-mode .model-option.active {
 }
 
 body.light-mode .message-container {
-    border-bottom: 1px solid #e9ecef;
+    background: transparent;
 }
 
 body.light-mode .user-message-container {
-    background: #ffffff;
+    background: transparent;
 }
 
 body.light-mode .assistant-message-container {
-    background: #f8f9fa;
+    background: transparent;
 }
 
 body.light-mode .user-avatar {
@@ -688,6 +959,22 @@ body.light-mode .assistant-avatar {
     background: #6c757d;
 }
 
+/* Light mode message bubble styling */
+body.light-mode .user-message-container .message-content {
+    background: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border-bottom-right-radius: 4px;
+    max-width: fit-content;
+    display: inline-block;
+}
+
+body.light-mode .assistant-message-container .message-content {
+    background: transparent;
+    color: #333333;
+}
+
 body.light-mode .message-content h1,
 body.light-mode .message-content h2,
 body.light-mode .message-content h3 {
@@ -695,13 +982,28 @@ body.light-mode .message-content h3 {
 }
 
 body.light-mode .message-content code {
-    background: #f8f9fa;
-    color: #333333;
+    background: rgba(0, 0, 0, 0.1);
+    color: inherit;
 }
 
 body.light-mode .message-content pre {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: inherit;
+}
+
+/* Light mode user message code styling */
+body.light-mode .user-message-container .message-content code,
+body.light-mode .user-message-container .message-content pre {
+    background: rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+}
+
+/* Light mode assistant message code styling */  
+body.light-mode .assistant-message-container .message-content code,
+body.light-mode .assistant-message-container .message-content pre {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333333;
 }
 
 body.light-mode .input-area {
@@ -747,4 +1049,33 @@ body.light-mode ::-webkit-scrollbar-thumb {
 
 body.light-mode ::-webkit-scrollbar-thumb:hover {
     background: #999;
+}
+
+body.light-mode .cancel-button {
+    background: #dc2626;
+}
+
+body.light-mode .cancel-button:hover {
+    background: #b91c1c;
+}
+
+/* Typewriter Animation */
+.typewriter-cursor {
+    color: #10a37f;
+    animation: blink 1s infinite;
+    font-weight: bold;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+body.light-mode .typewriter-cursor {
+    color: #0d8f6f;
+}
+
+/* Mobile sidebar toggle - always hidden on desktop */
+.mobile-sidebar-toggle {
+    display: none;
 }

@@ -129,8 +129,13 @@ function getConversationContext() {
     
     let context = 'Recent conversation context:\n';
     recentMessages.forEach((msg, index) => {
-        const role = msg.isUser ? 'User' : 'You';
-        const content = msg.content.replace(/<[^>]*>/g, '').trim();
+        const role = msg.isUser ? 'User' : 'Assistant';
+        let content = msg.content.replace(/<[^>]*>/g, '').trim();
+        // Clean up any role prefixes from stored content
+        content = content.replace(/^You:\s*/gi, '')
+                        .replace(/\nYou:\s*/gi, '\n')
+                        .replace(/^Assistant:\s*/gi, '')
+                        .replace(/\nAssistant:\s*/gi, '\n');
         context += `${role}: ${content}\n`;
     });
     
@@ -325,6 +330,97 @@ function updateChatHistory() {
 }
 
 // ====================================
+// MOBILE UTILITIES
+// ====================================
+
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+function initializeMobile() {
+    if (isMobile()) {
+        // Add mobile sidebar toggle
+        addMobileSidebarToggle();
+        
+        // Collapse sidebar by default on mobile
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        if (sidebar && mainContent) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('expanded');
+        }
+        
+        // Add viewport meta tag if not present
+        if (!document.querySelector('meta[name="viewport"]')) {
+            const meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+            document.head.appendChild(meta);
+        }
+    }
+}
+
+function addMobileSidebarToggle() {
+    // Create mobile toggle button
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'mobile-sidebar-toggle';
+    toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    toggleBtn.onclick = toggleMobileSidebar;
+    
+    // Add to body
+    document.body.appendChild(toggleBtn);
+}
+
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (sidebar && mainContent) {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+    }
+}
+
+// Handle orientation changes
+window.addEventListener('orientationchange', function() {
+    setTimeout(() => {
+        adjustTextareaHeight();
+        scrollToBottom();
+    }, 100);
+});
+
+// Handle window resize for responsive behavior
+window.addEventListener('resize', function() {
+    if (!isMobile()) {
+        // Remove mobile-specific classes on larger screens
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const toggleBtn = document.querySelector('.mobile-sidebar-toggle');
+        
+        if (sidebar && mainContent) {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+        }
+        
+        if (toggleBtn) {
+            toggleBtn.style.display = 'none';
+        }
+    } else {
+        const toggleBtn = document.querySelector('.mobile-sidebar-toggle');
+        if (toggleBtn) {
+            toggleBtn.style.display = 'block';
+        }
+    }
+});
+
+function scrollToBottom() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+// ====================================
 // UI UTILITIES
 // ====================================
 
@@ -356,6 +452,14 @@ function addMessage(content, isUser = false, imageData = null) {
                                .replace(/You are chatting with[\s\S]*?Current user message:/gi, '')
                                .replace(/IMPORTANT:[\s\S]*?discussed\./gi, '')
                                .replace(/IMPORTANT:[\s\S]*?different\./gi, '')
+                               .replace(/^You:\s*/gmi, '') // Remove "You:" at start (multiline)
+                               .replace(/\nYou:\s*/gi, '\n') // Remove "You:" after line breaks
+                               .replace(/You:\s*You:\s*/gi, '') // Remove "You: You:" duplications
+                               .replace(/^You:\s*You:\s*/gmi, '') // Remove "You: You:" at start (multiline)
+                               .replace(/^Assistant:\s*/gmi, '') // Remove "Assistant:" at start (multiline)
+                               .replace(/\nAssistant:\s*/gi, '\n') // Remove "Assistant:" after line breaks
+                               .replace(/Assistant:\s*Assistant:\s*/gi, '') // Remove "Assistant: Assistant:" duplications
+                               .replace(/^Assistant:\s*Assistant:\s*/gmi, '') // Remove duplicate at start
                                .trim();
         
         if (displayContent.length === 0) {
@@ -399,9 +503,9 @@ function addMessageToDOM(content, isUser = false, imageData = null) {
     avatar.className = `message-avatar ${isUser ? 'user-avatar' : 'assistant-avatar'}`;
     
     if (isUser && userProfile && userProfile.profilePicture) {
-        avatar.innerHTML = `<img src="${userProfile.profilePicture}" alt="User" style="width: 100%; height: 100%; border-radius: 2px; object-fit: cover;">`;
+        avatar.innerHTML = `<img src="${userProfile.profilePicture}" alt="User">`;
     } else {
-        avatar.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
+        avatar.innerHTML = isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
     }
     
     const messageContent = document.createElement('div');
@@ -432,6 +536,139 @@ function addMessageToDOM(content, isUser = false, imageData = null) {
     
     chatMessages.appendChild(messageContainer);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    return messageContainer;
+}
+
+async function addMessageWithTypewriter(content, isUser = false, imageData = null) {
+    if (isUser) {
+        // For user messages, use normal display
+        addMessage(content, isUser, imageData);
+        return;
+    }
+    
+    // Add to chat history first
+    if (currentChatId && chats[currentChatId]) {
+        let displayContent = content;
+        // Clean up system prompts that might leak through
+        displayContent = content.replace(/Conversation context[\s\S]*?Current user message:/gi, '')
+                               .replace(/Previous conversation context:[\s\S]*?Current user message:/gi, '')
+                               .replace(/You are chatting with[\s\S]*?Current user message:/gi, '')
+                               .replace(/IMPORTANT:[\s\S]*?discussed\./gi, '')
+                               .replace(/IMPORTANT:[\s\S]*?different\./gi, '')
+                               .replace(/^You:\s*/gmi, '') // Remove "You:" at start (multiline)
+                               .replace(/\nYou:\s*/gi, '\n') // Remove "You:" after line breaks
+                               .replace(/You:\s*You:\s*/gi, '') // Remove "You: You:" duplications
+                               .replace(/^You:\s*You:\s*/gmi, '') // Remove "You: You:" at start (multiline)
+                               .replace(/^Assistant:\s*/gmi, '') // Remove "Assistant:" at start (multiline)
+                               .replace(/\nAssistant:\s*/gi, '\n') // Remove "Assistant:" after line breaks
+                               .replace(/Assistant:\s*Assistant:\s*/gi, '') // Remove "Assistant: Assistant:" duplications
+                               .replace(/^Assistant:\s*Assistant:\s*/gmi, '') // Remove duplicate at start
+                               .trim();
+        
+        if (displayContent.length === 0) {
+            displayContent = content;
+        }
+        
+        chats[currentChatId].messages.push({
+            content: displayContent,
+            isUser: isUser,
+            imageData: imageData,
+            timestamp: Date.now()
+        });
+
+        chats[currentChatId].lastUpdated = Date.now();
+        saveChats();
+    }
+    
+    // Create message container for AI response
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const messageContainer = document.createElement('div');
+    messageContainer.className = 'message-container assistant-message-container';
+    
+    const message = document.createElement('div');
+    message.className = 'message';
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar assistant-avatar';
+    avatar.innerHTML = '<i class="fas fa-robot"></i>';
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    
+    // Add image if present
+    if (imageData) {
+        const img = document.createElement('img');
+        img.src = `data:image/jpeg;base64,${imageData}`;
+        img.className = 'message-image';
+        messageContent.appendChild(img);
+    }
+    
+    // Create text container
+    const textDiv = document.createElement('div');
+    messageContent.appendChild(textDiv);
+    
+    message.appendChild(avatar);
+    message.appendChild(messageContent);
+    messageContainer.appendChild(message);
+    
+    chatMessages.appendChild(messageContainer);
+    
+    // Clean the content for display (same cleanup as other functions)
+    let cleanContent = content.replace(/Conversation context[\s\S]*?Current user message:/gi, '')
+                             .replace(/Previous conversation context:[\s\S]*?Current user message:/gi, '')
+                             .replace(/You are chatting with[\s\S]*?Current user message:/gi, '')
+                             .replace(/IMPORTANT:[\s\S]*?discussed\./gi, '')
+                             .replace(/IMPORTANT:[\s\S]*?different\./gi, '')
+                             .replace(/^You:\s*/gmi, '') // Remove "You:" at start (multiline)
+                             .replace(/\nYou:\s*/gi, '\n') // Remove "You:" after line breaks
+                             .replace(/You:\s*You:\s*/gi, '') // Remove "You: You:" duplications
+                             .replace(/^You:\s*You:\s*/gmi, '') // Remove "You: You:" at start (multiline)
+                             .replace(/^Assistant:\s*/gmi, '') // Remove "Assistant:" at start (multiline)
+                             .replace(/\nAssistant:\s*/gi, '\n') // Remove "Assistant:" after line breaks
+                             .replace(/Assistant:\s*Assistant:\s*/gi, '') // Remove "Assistant: Assistant:" duplications
+                             .replace(/^Assistant:\s*Assistant:\s*/gmi, '') // Remove duplicate at start
+                             .trim();
+    
+    if (cleanContent.length === 0) {
+        cleanContent = content;
+    }
+    
+    // Typewriter effect
+    const plainText = cleanContent.replace(/<[^>]*>/g, ''); // Remove HTML tags for typing
+    let currentIndex = 0;
+    
+    // Start with empty content
+    textDiv.innerHTML = '';
+    
+    const typeInterval = setInterval(() => {
+        if (currentIndex < plainText.length) {
+            // Add next character
+            const partialText = plainText.substring(0, currentIndex + 1);
+            
+            // Convert back to HTML for proper rendering (simplified approach)
+            // For more complex HTML, you'd need a more sophisticated parser
+            let displayText = partialText;
+            
+            // Handle basic markdown/HTML formatting
+            displayText = displayText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            displayText = displayText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            displayText = displayText.replace(/\n/g, '<br>');
+            
+            textDiv.innerHTML = displayText + '<span class="typewriter-cursor">|</span>';
+            
+            currentIndex++;
+            
+            // Auto-scroll as text appears
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            // Typing complete
+            clearInterval(typeInterval);
+            textDiv.innerHTML = cleanContent; // Use cleaned formatted content
+        }
+    }, 7); // Made faster: changed from 30ms to 15ms
 }
 
 function showTyping() {
@@ -490,7 +727,11 @@ async function sendMessage() {
     }
     
     sendButton.disabled = true;
-    const userMessage = message || "What's in this image?";
+    // Show cancel button and create abort controller
+    toggleCancelButton(true);
+    window.currentController = new AbortController();
+    
+    const userMessage = message || "What's in this image?"; 
     addMessage(userMessage, true, currentImage);
     input.value = '';
     adjustTextareaHeight();
@@ -546,6 +787,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),
+            signal: window.currentController?.signal
         });
         
         const data = await response.json();
@@ -557,12 +799,26 @@ async function sendMessage() {
         
         const botResponse = data.response || 'Sorry, I couldn\'t process your request.';
         const formattedResponse = marked.parse(botResponse);
-        addMessage(formattedResponse, false);
+        
+        // Add message with typewriter effect for AI responses
+        addMessageWithTypewriter(formattedResponse, false);
     } catch (error) {
         removeTyping();
-        addMessage(`<p><strong>Error:</strong> ${error.message}</p>`, false);
+        // Don't show error message if user intentionally cancelled
+        // Check for various abort-related error types and messages
+        const isAbortError = error.name === 'AbortError' || 
+                           error.message.includes('aborted') || 
+                           error.message.includes('abort') ||
+                           error.code === 20; // DOMException.ABORT_ERR
+        
+        if (!isAbortError) {
+            addMessage(`<p><strong>Error:</strong> ${error.message}</p>`, false);
+        }
     } finally {
         sendButton.disabled = false;
+        // Hide cancel button and cleanup
+        toggleCancelButton(false);
+        window.currentController = null;
     }
 }
 
@@ -574,6 +830,9 @@ function initializeApp() {
     adjustTextareaHeight();
     loadUserProfile();
     loadChats();
+    
+    // Initialize mobile features
+    initializeMobile();
     
     if (Object.keys(chats).length === 0) {
         newChat();

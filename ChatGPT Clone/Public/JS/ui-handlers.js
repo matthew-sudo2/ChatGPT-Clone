@@ -34,6 +34,48 @@ function handleRemoveImageClick() {
     removeImage();
 }
 
+// Event handler for cancel button
+function handleCancelClick() {
+    // Clear any pending operations
+    if (window.currentController) {
+        window.currentController.abort();
+        window.currentController = null;
+    }
+    
+    // Remove typing indicator if present
+    const typingMessage = document.getElementById('typingMessage');
+    if (typingMessage) {
+        typingMessage.remove();
+    }
+    
+    // Clear input
+    const userInput = document.getElementById('userInput');
+    if (userInput) {
+        userInput.value = '';
+        userInput.style.height = 'auto';
+    }
+    
+    // Remove any image preview
+    removeImage();
+    
+    // Hide cancel button and enable send button
+    toggleCancelButton(false);
+    
+    // Re-enable send button
+    const sendButton = document.getElementById('sendButton');
+    if (sendButton) {
+        sendButton.disabled = false;
+    }
+}
+
+// Utility to toggle cancel button visibility
+function toggleCancelButton(show) {
+    const cancelButton = document.getElementById('cancelButton');
+    if (cancelButton) {
+        cancelButton.style.display = show ? 'flex' : 'none';
+    }
+}
+
 // Utility to setup all event listeners
 function setupEventListeners() {
     // Image upload button
@@ -59,6 +101,12 @@ function setupEventListeners() {
     const sendButton = document.getElementById('sendButton');
     if (sendButton) {
         sendButton.addEventListener('click', handleSendClick);
+    }
+    
+    // Cancel button
+    const cancelButton = document.getElementById('cancelButton');
+    if (cancelButton) {
+        cancelButton.addEventListener('click', handleCancelClick);
     }
     
     // New chat button
