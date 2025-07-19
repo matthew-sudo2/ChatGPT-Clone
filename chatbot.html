@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ChatGPT</title>
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				background: #212121;
+				color: #ffffff;
+				height: 100vh;
+				overflow: hidden;
+			}
+
+			.app-container {
+				display: flex;
+				height: 100vh;
+			}
+
+			/* Sidebar */
+			.sidebar {
+				width: 260px;
+				background: #171717;
+				border-right: 1px solid #363636;
+				display: flex;
+				flex-direction: column;
+				padding: 12px;
+			}
+
+			.new-chat-btn {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 14px 16px;
+				margin-bottom: 12px;
+				background: transparent;
+				border: 1px solid #4a4a4a;
+				border-radius: 8px;
+				color: #ffffff;
+				cursor: pointer;
+				font-size: 14px;
+				font-weight: 500;
+				transition: all 0.2s ease;
+			}
+
+			.new-chat-btn:hover {
+				background: #2a2a2a;
+				border-color: #5a5a5a;
+			}
+
+			.chat-history {
+				flex: 1;
+				overflow-y: auto;
+				margin-bottom: 20px;
+			}
+
+			.chat-item {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 12px 16px;
+				margin: 2px 0;
+				border-radius: 8px;
+				cursor: pointer;
+				font-size: 14px;
+				color: #e5e5e5;
+				transition: all 0.2s ease;
+				position: relative;
+			}
+
+			.chat-item:hover {
+				background: #2a2a2a;
+			}
+
+			.chat-item.active {
+				background: #2a2a2a;
+				border: 1px solid #4a4a4a;
+			}
+
+			.chat-title {
+				flex: 1;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.delete-chat-btn {
+				background: none;
+				border: none;
+				color: #8e8ea0;
+				cursor: pointer;
+				padding: 4px;
+				border-radius: 4px;
+				transition: all 0.2s;
+				opacity: 0;
+				font-size: 12px;
+			}
+
+			.chat-item:hover .delete-chat-btn {
+				opacity: 1;
+			}
+
+			.delete-chat-btn:hover {
+				background: #ef4444;
+				color: white;
+			}
+
+			.user-section {
+				border-top: 1px solid #363636;
+				padding: 16px;
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				color: #e5e5e5;
+				font-size: 14px;
+				background: #1a1a1a;
+				margin-top: auto;
+			}
+
+			/* Main Chat Area */
+			.main-content {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				background: #212121;
+			}
+
+			.chat-header {
+				padding: 16px 24px;
+				border-bottom: 1px solid #363636;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #212121;
+			}
+
+			.model-selector {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				background: transparent;
+				border: none;
+				color: #ffffff;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				padding: 12px 16px;
+				border-radius: 8px;
+				transition: background 0.2s ease;
+			}
+
+			.model-selector:hover {
+				background: #2a2a2a;
+			}
+
+			.chat-messages {
+				flex: 1;
+				overflow-y: auto;
+				padding: 0;
+			}
+
+			.message-container {
+				width: 100%;
+				border-bottom: 1px solid #363636;
+			}
+
+			.message {
+				max-width: 768px;
+				margin: 0 auto;
+				padding: 24px;
+				display: flex;
+				gap: 24px;
+			}
+
+			.user-message-container {
+				background: #212121;
+			}
+
+			.assistant-message-container {
+				background: #2a2a2a;
+			}
+
+			.message-avatar {
+				width: 30px;
+				height: 30px;
+				border-radius: 2px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+				flex-shrink: 0;
+			}
+
+			.user-avatar {
+				background: #10a37f;
+				color: white;
+				font-size: 14px;
+			}
+
+			.assistant-avatar {
+				background: #ab68ff;
+				color: white;
+				font-size: 14px;
+			}
+
+			.message-content {
+				flex: 1;
+				line-height: 1.6;
+				font-size: 16px;
+			}
+
+			.message-content p {
+				margin-bottom: 16px;
+			}
+
+			.message-content p:last-child {
+				margin-bottom: 0;
+			}
+
+			.message-content h1, .message-content h2, .message-content h3 {
+				margin: 16px 0 8px 0;
+				color: #ffffff;
+			}
+
+			.message-content ul, .message-content ol {
+				margin: 16px 0;
+				padding-left: 24px;
+			}
+
+			.message-content li {
+				margin-bottom: 8px;
+			}
+
+			.message-content code {
+				background: #1a1b23;
+				padding: 2px 6px;
+				border-radius: 4px;
+				font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+				font-size: 14px;
+			}
+
+			.message-content pre {
+				background: #1a1b23;
+				padding: 16px;
+				border-radius: 8px;
+				overflow-x: auto;
+				margin: 16px 0;
+				border: 1px solid #4d4d4f;
+			}
+
+			.message-content pre code {
+				background: none;
+				padding: 0;
+			}
+
+			/* Input Area */
+			.input-area {
+				padding: 24px;
+				background: #212121;
+			}
+
+			.input-container {
+				max-width: 768px;
+				margin: 0 auto;
+				position: relative;
+			}
+
+			.input-wrapper {
+				background: #2a2a2a;
+				border: 1px solid #4a4a4a;
+				border-radius: 12px;
+				display: flex;
+				align-items: flex-end;
+				min-height: 52px;
+				max-height: 200px;
+				overflow: hidden;
+				transition: border-color 0.2s ease;
+			}
+
+			.input-wrapper:focus-within {
+				border-color: #10a37f;
+				box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
+			}
+
+			#userInput {
+				flex: 1;
+				background: transparent;
+				border: none;
+				outline: none;
+				color: #ffffff;
+				font-size: 16px;
+				line-height: 1.5;
+				padding: 12px 16px;
+				resize: none;
+				max-height: 168px;
+				overflow-y: auto;
+			}
+
+			#userInput::placeholder {
+				color: #a0a0a0;
+			}
+
+			.send-button {
+				background: #10a37f;
+				border: none;
+				border-radius: 6px;
+				width: 32px;
+				height: 32px;
+				margin: 10px 10px 10px 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: background-color 0.2s;
+				flex-shrink: 0;
+			}
+
+			.send-button:hover:not(:disabled) {
+				background: #0d8f6f;
+			}
+
+			.send-button:disabled {
+				background: #4a4a4a;
+				cursor: not-allowed;
+			}
+
+			.send-button svg {
+				width: 16px;
+				height: 16px;
+				color: #ffffff;
+			}
+
+			/* Loading Animation */
+			.typing-indicator {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				color: #8e8ea0;
+			}
+
+			.typing-dot {
+				width: 4px;
+				height: 4px;
+				border-radius: 50%;
+				background: #8e8ea0;
+				animation: typing 1.4s infinite ease-in-out;
+			}
+
+			.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+			.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+			@keyframes typing {
+				0%, 80%, 100% {
+					transform: scale(0.8);
+					opacity: 0.5;
+				}
+				40% {
+					transform: scale(1);
+					opacity: 1;
+				}
+			}
+
+			/* Scrollbar */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+
+			::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			::-webkit-scrollbar-thumb {
+				background: #4d4d4f;
+				border-radius: 4px;
+			}
+
+			::-webkit-scrollbar-thumb:hover {
+				background: #6b6b6b;
+			}
+
+			/* Responsive */
+			@media (max-width: 768px) {
+				.sidebar {
+					display: none;
+				}
+				
+				.message {
+					padding: 16px;
+					gap: 16px;
+				}
+				
+				.input-area {
+					padding: 16px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="app-container">
+			<!-- Sidebar -->
+			<div class="sidebar">
+				<button class="new-chat-btn" onclick="newChat()">
+					<i class="fas fa-plus"></i>
+					New chat
+				</button>
+				
+				<div class="chat-history" id="chatHistory">
+					<!-- Chat history will be populated dynamically -->
+				</div>
+				
+				<div class="user-section">
+					<i class="fas fa-user"></i>
+					<span>User</span>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div class="main-content">
+				<div class="chat-header">
+					<button class="model-selector">
+						Llama AI
+						<i class="fas fa-chevron-down"></i>
+					</button>
+				</div>
+
+				<div class="chat-messages" id="chatMessages">
+					<!-- Messages will be added here -->
+				</div>
+
+				<div class="input-area">
+					<div class="input-container">
+						<div class="input-wrapper">
+							<textarea 
+								id="userInput" 
+								placeholder="Message ChatGPT..." 
+								rows="1"
+								onkeydown="handleKeyDown(event)"
+								oninput="adjustTextareaHeight()"></textarea>
+							<button class="send-button" id="sendButton" onclick="sendMessage()">
+								<svg viewBox="0 0 24 24" fill="currentColor">
+									<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			// Chat Management
+			let currentChatId = null;
+			let chats = {};
+
+			// Load chats from localStorage
+			function loadChats() {
+				const savedChats = localStorage.getItem('chatgpt-chats');
+				if (savedChats) {
+					chats = JSON.parse(savedChats);
+				}
+			}
+
+			// Save chats to localStorage
+			function saveChats() {
+				localStorage.setItem('chatgpt-chats', JSON.stringify(chats));
+			}
+
+			// Generate unique chat ID
+			function generateChatId() {
+				return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+			}
+
+			// Get chat title from first message
+			function getChatTitle(messages) {
+				if (messages.length > 0) {
+					const firstMessage = messages[0].content;
+					return firstMessage.length > 30 ? firstMessage.substring(0, 30) + '...' : firstMessage;
+				}
+				return 'New Chat';
+			}
+
+			// Create new chat
+			function newChat() {
+				// Save current chat if it exists
+				if (currentChatId && chats[currentChatId]) {
+					chats[currentChatId].lastUpdated = Date.now();
+					saveChats();
+				}
+
+				// Create new chat
+				currentChatId = generateChatId();
+				chats[currentChatId] = {
+					id: currentChatId,
+					title: 'New Chat',
+					messages: [],
+					created: Date.now(),
+					lastUpdated: Date.now()
+				};
+
+				// Clear chat area
+				const chatMessages = document.getElementById('chatMessages');
+				chatMessages.innerHTML = '';
+				document.getElementById('userInput').value = '';
+				adjustTextareaHeight();
+
+				// Update sidebar
+				updateChatHistory();
+				saveChats();
+			}
+
+			// Load specific chat
+			function loadChat(chatId) {
+				// Save current chat first
+				if (currentChatId && chats[currentChatId]) {
+					chats[currentChatId].lastUpdated = Date.now();
+					saveChats();
+				}
+
+				currentChatId = chatId;
+				const chat = chats[chatId];
+				
+				if (!chat) return;
+
+				// Clear and load messages
+				const chatMessages = document.getElementById('chatMessages');
+				chatMessages.innerHTML = '';
+
+				chat.messages.forEach(msg => {
+					addMessageToDOM(msg.content, msg.isUser);
+				});
+
+				// Update sidebar to show active chat
+				updateChatHistory();
+			}
+
+			// Delete chat
+			function deleteChat(chatId, event) {
+				event.stopPropagation();
+				
+				if (confirm('Are you sure you want to delete this chat?')) {
+					delete chats[chatId];
+					
+					// If we're deleting the current chat, create a new one
+					if (currentChatId === chatId) {
+						newChat();
+					} else {
+						updateChatHistory();
+					}
+					
+					saveChats();
+				}
+			}
+
+			// Update chat history sidebar
+			function updateChatHistory() {
+				const chatHistory = document.getElementById('chatHistory');
+				chatHistory.innerHTML = '';
+
+				// Sort chats by last updated
+				const sortedChats = Object.values(chats).sort((a, b) => b.lastUpdated - a.lastUpdated);
+
+				sortedChats.forEach(chat => {
+					const chatItem = document.createElement('div');
+					chatItem.className = `chat-item ${chat.id === currentChatId ? 'active' : ''}`;
+					chatItem.onclick = () => loadChat(chat.id);
+					
+					chatItem.innerHTML = `
+						<i class="fas fa-message"></i>
+						<span class="chat-title">${chat.title}</span>
+						<button class="delete-chat-btn" onclick="deleteChat('${chat.id}', event)" title="Delete chat">
+							<i class="fas fa-trash"></i>
+						</button>
+					`;
+					
+					chatHistory.appendChild(chatItem);
+				});
+
+				// If no chats exist, create one
+				if (sortedChats.length === 0) {
+					newChat();
+				}
+			}
+
+			function adjustTextareaHeight() {
+				const textarea = document.getElementById('userInput');
+				textarea.style.height = 'auto';
+				textarea.style.height = Math.min(textarea.scrollHeight, 168) + 'px';
+			}
+
+			function handleKeyDown(event) {
+				if (event.key === 'Enter' && !event.shiftKey) {
+					event.preventDefault();
+					sendMessage();
+				}
+			}
+
+			function addMessage(content, isUser = false) {
+				// Add to current chat's messages
+				if (currentChatId && chats[currentChatId]) {
+					chats[currentChatId].messages.push({
+						content: content,
+						isUser: isUser,
+						timestamp: Date.now()
+					});
+
+					// Update chat title based on first user message
+					if (isUser && chats[currentChatId].messages.filter(m => m.isUser).length === 1) {
+						chats[currentChatId].title = getChatTitle([{content: content}]);
+						updateChatHistory();
+					}
+
+					chats[currentChatId].lastUpdated = Date.now();
+					saveChats();
+				}
+
+				// Add to DOM
+				addMessageToDOM(content, isUser);
+			}
+
+			function addMessageToDOM(content, isUser = false) {
+				const chatMessages = document.getElementById('chatMessages');
+				
+				const messageContainer = document.createElement('div');
+				messageContainer.className = `message-container ${isUser ? 'user-message-container' : 'assistant-message-container'}`;
+				
+				const message = document.createElement('div');
+				message.className = 'message';
+				
+				const avatar = document.createElement('div');
+				avatar.className = `message-avatar ${isUser ? 'user-avatar' : 'assistant-avatar'}`;
+				avatar.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
+				
+				const messageContent = document.createElement('div');
+				messageContent.className = 'message-content';
+				
+				if (isUser) {
+					messageContent.textContent = content;
+				} else {
+					messageContent.innerHTML = content;
+				}
+				
+				message.appendChild(avatar);
+				message.appendChild(messageContent);
+				messageContainer.appendChild(message);
+				
+				chatMessages.appendChild(messageContainer);
+				chatMessages.scrollTop = chatMessages.scrollHeight;
+			}
+
+			function showTyping() {
+				const chatMessages = document.getElementById('chatMessages');
+				
+				const messageContainer = document.createElement('div');
+				messageContainer.className = 'message-container assistant-message-container';
+				messageContainer.id = 'typingMessage';
+				
+				const message = document.createElement('div');
+				message.className = 'message';
+				
+				const avatar = document.createElement('div');
+				avatar.className = 'message-avatar assistant-avatar';
+				avatar.textContent = 'AI';
+				
+				const messageContent = document.createElement('div');
+				messageContent.className = 'message-content';
+				messageContent.innerHTML = `
+					<div class="typing-indicator">
+						<div class="typing-dot"></div>
+						<div class="typing-dot"></div>
+						<div class="typing-dot"></div>
+					</div>
+				`;
+				
+				message.appendChild(avatar);
+				message.appendChild(messageContent);
+				messageContainer.appendChild(message);
+				
+				chatMessages.appendChild(messageContainer);
+				chatMessages.scrollTop = chatMessages.scrollHeight;
+			}
+
+			function removeTyping() {
+				const typingMessage = document.getElementById('typingMessage');
+				if (typingMessage) {
+					typingMessage.remove();
+				}
+			}
+
+			async function sendMessage() {
+				const input = document.getElementById('userInput');
+				const sendButton = document.getElementById('sendButton');
+				const message = input.value.trim();
+				
+				if (!message) {
+					return;
+				}
+				
+				// Disable send button and clear input
+				sendButton.disabled = true;
+				addMessage(message, true);
+				input.value = '';
+				adjustTextareaHeight();
+				
+				// Show typing indicator
+				showTyping();
+				
+				try {
+					const response = await fetch('/api/chat', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							message: message
+						}),
+					});
+					
+					const data = await response.json();
+					removeTyping();
+					
+					if (!response.ok) {
+						throw new Error(data.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+					}
+					
+					const botResponse = data.response || 'Sorry, I couldn\'t process your request.';
+					const formattedResponse = marked.parse(botResponse);
+					addMessage(formattedResponse, false);
+				} catch (error) {
+					removeTyping();
+					addMessage(`<p><strong>Error:</strong> ${error.message}</p>`, false);
+				} finally {
+					sendButton.disabled = false;
+				}
+			}
+
+			// Initialize
+			document.addEventListener('DOMContentLoaded', function() {
+				adjustTextareaHeight();
+				loadChats();
+				
+				// If no current chat, create one
+				if (Object.keys(chats).length === 0) {
+					newChat();
+				} else {
+					// Load the most recent chat
+					const sortedChats = Object.values(chats).sort((a, b) => b.lastUpdated - a.lastUpdated);
+					if (sortedChats.length > 0) {
+						loadChat(sortedChats[0].id);
+					}
+				}
+				
+				updateChatHistory();
+			});
+		</script>
+	</body>
+</html>
