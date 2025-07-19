@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="mcdo.controller.CheckoutController"
+            prefWidth="1920" prefHeight="1080"
+            style="-fx-background-color:#f9f9f9;">
+
+    <!-- ─── TOP BAR ─────────────────────────────────────────────── -->
+    <top>
+        <HBox prefHeight="98" style="-fx-background-color:#FFC72C;">
+            <children>
+                <ImageView fx:id="logoImage" fitHeight="80" fitWidth="90" preserveRatio="true"
+                           pickOnBounds="true">
+                    <effect>
+                        <DropShadow>
+                            <color><Color red="0.4" green="0.4" blue="0.4"/></color>
+                        </DropShadow>
+                    </effect>
+                </ImageView>
+
+                <Label text="McDonald's Checkout" textFill="white">
+                    <font><Font name="Segoe UI Black" size="36"/></font>
+                </Label>
+            </children>
+            <padding><Insets left="32"/></padding>
+            <spacing>24</spacing>
+        </HBox>
+    </top>
+
+    <!-- ─── LEFT SIDEBAR ────────────────────────────────────────── -->
+    <left>
+        <VBox spacing="16"
+              style="-fx-background-color:white;-fx-padding:32;">
+            <children>
+                <Label text="ORDER SUMMARY" styleClass="category-title"/>
+                
+                <Label fx:id="grandTotal" text="₱ 0.00" styleClass="total-label"/>
+
+                <Button text="◀ Back to Menu" onAction="#backToMenu" styleClass="menu-btn"/>
+                <Button text="Complete Order" onAction="#completeOrder" styleClass="checkout-btn"/>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- ─── CHECKOUT TABLE ─────────────────────────────────────── -->
+    <center>
+        <VBox style="-fx-padding:32; -fx-spacing:16;">
+            <children>
+                <Label text="Your Order" style="-fx-font-size:24px; -fx-font-weight:bold; -fx-text-fill:#333333;"/>
+                
+                <TableView fx:id="table" prefHeight="600">
+                    <columns>
+                        <TableColumn fx:id="colName" text="Item Name" prefWidth="300" resizable="false"/>
+                        <TableColumn fx:id="colQty" text="Quantity" prefWidth="100" resizable="false"/>
+                        <TableColumn fx:id="colPrice" text="Unit Price" prefWidth="120" resizable="false"/>
+                        <TableColumn fx:id="colLineTot" text="Line Total" prefWidth="120" resizable="false"/>
+                        <TableColumn fx:id="colAction" text="Actions" prefWidth="150" resizable="false"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

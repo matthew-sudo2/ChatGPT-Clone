@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="1080" prefWidth="1920" style="-fx-background-color:#f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mcdo.controller.SignUpController">
+    <!-- Top Bar - Fixed Header -->
+    <top>
+        <HBox prefHeight="100" style="-fx-background-color:#FFC72C; -fx-padding: 16 24;">
+            <children>
+                <ImageView fitHeight="74.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/mcdonalds-png-logo-2772.png" />
+                    </image>
+                    <effect>
+                        <DropShadow height="13.0" radius="6.0" width="13.0" />
+                    </effect>
+                </ImageView>
+                <Label layoutX="80.0" layoutY="13.0" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 0 20;" text="Create Account">
+                    <font><Font name="Segoe UI Black" size="36" /></font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox alignment="CENTER" style="-fx-background-color: transparent;">
+
+            <!-- Scrollable Form Container -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED">
+                <content>
+                    <VBox alignment="CENTER" style="-fx-padding: 32;">
+                        <!-- Sign Up Form Container -->
+                        <VBox alignment="CENTER" prefWidth="400.0" style="-fx-background-color: #f8f8f8; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5); -fx-padding: 30 40 60 40; -fx-margin: -600 0 0 0; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 15;">
+                            <children>
+                                <!-- Title -->
+                                <Label text="Create Account" textFill="#ffc72c" VBox.vgrow="NEVER">
+                                    <font>
+                                        <Font name="System Bold" size="32.0" />
+                                    </font>
+                                    <effect>
+                                        <DropShadow color="#ffc72c" height="2.0" radius="1.0" width="2.0" />
+                                    </effect>
+                                </Label>
+                                
+                                <!-- Subtitle -->
+                                <Label style="-fx-padding: 0 0 20 0;" text="Join McDonald's Kiosk" textFill="#666666" VBox.vgrow="NEVER">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                
+                                <!-- Username Field -->
+                                <VBox spacing="8" style="-fx-padding: 0 0 15 0;">
+                                    <children>
+                                        <Label text="Username:" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="newusername" prefHeight="40.0" prefWidth="320.0" promptText="Enter your username" style="-fx-font-size: 16px; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </TextField>
+                                        <Label fx:id="usernameStatusLabel" textFill="#999999">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Password Field -->
+                                <VBox spacing="8" style="-fx-padding: 0 0 15 0;">
+                                    <children>
+                                        <Label text="Password:" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <PasswordField fx:id="newpassword" prefHeight="40.0" prefWidth="320.0" promptText="Enter your password" style="-fx-font-size: 16px; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </PasswordField>
+                                        <Label fx:id="passwordStrengthLabel" textFill="#999999">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Confirm Password Field -->
+                                <VBox spacing="8" style="-fx-padding: 0 0 15 0;">
+                                    <children>
+                                        <Label text="Confirm Password:" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <PasswordField fx:id="confirmpassword" prefHeight="40.0" prefWidth="320.0" promptText="Confirm your password" style="-fx-font-size: 16px; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </PasswordField>
+                                        <Label fx:id="passwordMatchLabel" textFill="#999999">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Status Label -->
+                                <Label fx:id="statuslabel" prefHeight="25.0" prefWidth="320.0" style="-fx-padding: 10 0 15 0; -fx-alignment: center;" textFill="RED">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                
+                                <!-- Requirements Info -->
+                                <Label style="-fx-padding: 0 0 20 0; -fx-font-style: italic;" text="Password must be at least 3 characters long" textFill="#999999">
+                                    <font>
+                                        <Font size="12.0" />
+                                    </font>
+                                </Label>
+                                
+                                <!-- Buttons -->
+                                <VBox spacing="15" style="-fx-alignment: center; -fx-padding: 20 0 0 0;">
+                                    <children>
+                                        <Button fx:id="signupbutton" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #FFC72C; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);" text="Create Account" textFill="WHITE">
+                                            <font>
+                                                <Font name="Arial Bold" size="16.0" />
+                                            </font>
+                                        </Button>
+                                        <Button fx:id="backbutton" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #666666; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);" text="Back to Login" textFill="WHITE">
+                                            <font>
+                                                <Font name="Arial Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

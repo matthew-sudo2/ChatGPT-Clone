@@ -1,0 +1,30 @@
+.action-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-padding: 16 32;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+#saveToFileButton {
+    -fx-background-color: #28a745;
+}
+
+#saveToFileButton:hover {
+    -fx-background-color: #1e7e34;
+}
+
+.action-button:last-child {
+    -fx-background-color: #6c757d;
+}
+
+.action-button:last-child:hover {
+    -fx-background-color: #5a6268;
+} 

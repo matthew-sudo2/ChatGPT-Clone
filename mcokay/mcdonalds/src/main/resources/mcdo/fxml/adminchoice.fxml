@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="1080" prefWidth="1920" style="-fx-background-color:#f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mcdo.controller.AdminChoiceController">
+    <!-- Top Bar - Fixed Header -->
+    <top>
+        <HBox prefHeight="100" style="-fx-background-color:#FFC72C; -fx-padding: 16 24;">
+            <children>
+                <ImageView fitHeight="74.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/mcdonalds-png-logo-2772.png" />
+                    </image>
+                    <effect>
+                        <DropShadow height="13.0" radius="6.0" width="13.0" />
+                    </effect>
+                </ImageView>
+                <Label layoutX="80.0" layoutY="13.0" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 0 20;" text="Admin Dashboard">
+                    <font><Font name="Segoe UI Black" size="36" /></font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox alignment="CENTER" spacing="40" style="-fx-padding: 40;">
+            <!-- Welcome Message -->
+            <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Welcome, Admin!">
+                <font><Font name="Segoe UI Black" size="32" /></font>
+            </Label>
+            
+            <!-- Subtitle -->
+            <Label style="-fx-font-size: 18px; -fx-text-fill: #666666;" text="What would you like to do today?">
+                <font><Font size="18" /></font>
+            </Label>
+
+            <!-- Buttons Container -->
+            <HBox alignment="CENTER" spacing="40" style="-fx-padding: 40 0;">
+                <!-- Place Order Button -->
+                <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 5);">
+                    <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../../images/order-icon.png" />
+                        </image>
+                    </ImageView>
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Place Order">
+                        <font><Font name="Segoe UI Bold" size="24" /></font>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666; -fx-wrap-text: true; -fx-text-alignment: center;" text="Order food as a customer">
+                        <font><Font size="14" /></font>
+                    </Label>
+                    <Button fx:id="placeOrderButton" onAction="#handlePlaceOrder" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #FFC72C; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);" text="Place Order" textFill="WHITE">
+                        <font>
+                            <Font name="Arial Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </VBox>
+
+                <!-- Manage Accounts Button -->
+                <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 5);">
+                    <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../../images/admin-icon.png" />
+                        </image>
+                    </ImageView>
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Manage Accounts">
+                        <font><Font name="Segoe UI Bold" size="24" /></font>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666; -fx-wrap-text: true; -fx-text-alignment: center;" text="Manage user accounts and permissions">
+                        <font><Font size="14" /></font>
+                    </Label>
+                    <Button fx:id="manageAccountsButton" onAction="#handleManageAccounts" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #FFC72C; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);" text="Manage Accounts" textFill="WHITE">
+                        <font>
+                            <Font name="Arial Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane> 

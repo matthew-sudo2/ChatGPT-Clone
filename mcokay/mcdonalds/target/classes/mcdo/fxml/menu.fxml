@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="1080" prefWidth="1920" style="-fx-background-color:#f9f9f9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mcdo.controller.MenuController">
+
+    <!-- ─── TOP BAR ─────────────────────────────────────────────── -->
+    <top>
+        <HBox prefHeight="98" style="-fx-background-color:#FFC72C;">
+            <children>
+                <ImageView fx:id="logoImage" fitHeight="70" fitWidth="70" pickOnBounds="true" preserveRatio="true">
+                    <effect>
+                        <DropShadow>
+                            <color><Color red="0.4" green="0.4" blue="0.4" /></color>
+                            <radius>4</radius>
+                            <spread>0.2</spread>
+                        </DropShadow>
+                    </effect>
+                </ImageView>
+
+                <Label text="McDonald's Kiosk" textFill="white">
+                    <font>
+                        <Font name="System Bold" size="32" />
+                    </font>
+                    <effect>
+                        <DropShadow>
+                            <color><Color red="0.4" green="0.4" blue="0.4" /></color>
+                            <radius>2</radius>
+                            <spread>0.1</spread>
+                        </DropShadow>
+                    </effect>
+                </Label>
+            </children>
+            <padding>
+                <Insets left="32" right="32" top="14" bottom="14" />
+            </padding>
+            <spacing>16</spacing>
+            <alignment>CENTER_LEFT</alignment>
+        </HBox>
+    </top>
+
+    <!-- ─── LEFT SIDEBAR ────────────────────────────────────────── -->
+    <left>
+        <VBox spacing="16" style="-fx-background-color:white;-fx-padding:32;">
+            <children>
+                <VBox spacing="16">
+                    <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
+                </VBox>
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent; -fx-padding: 0;" styleClass="clean-scroll">
+                    <content>
+                        <VBox fx:id="categoryBox" spacing="16" style="-fx-background-color: white;">
+                            <children>
+                                <Label styleClass="category-title" text="CATEGORIES" />
+                                <Button styleClass="menu-btn" text="ALL FOOD" />
+                                <Button styleClass="menu-btn" text="BURGER" />
+                                <Button styleClass="menu-btn" text="DRINK" />
+                                <Button styleClass="menu-btn" text="CHICKEN" />
+                                <Button styleClass="menu-btn" text="FRIES" />
+                                <Button styleClass="menu-btn" text="RICEBOWLS" />
+                                <Button styleClass="menu-btn" text="BREAKFAST" />
+                                <Button styleClass="menu-btn" text="MCCAFE" />
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+                <Region VBox.vgrow="ALWAYS" />
+                <Label fx:id="totalLabel" styleClass="total-label" text="₱ 0.00" />
+                <Label fx:id="emptyCartLabel" styleClass="empty-cart-label" text="No items in cart" visible="false" />
+                <Button fx:id="checkoutBtn" disable="true" maxWidth="Infinity" styleClass="checkout-btn" text="Checkout ▶" />
+            </children>
+        </VBox>
+    </left>
+
+    <!-- ─── PRODUCT GRID ────────────────────────────────────────── -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color:transparent;">
+            <content>
+                <FlowPane fx:id="itemsPane" hgap="24" style="-fx-padding:32;" vgap="24" />
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="1080" prefWidth="1920" style="-fx-background-color:#f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mcdo.controller.OrderTypeController">
+    <!-- Top Bar - Fixed Header -->
+    <top>
+        <HBox prefHeight="100" style="-fx-background-color:#FFC72C; -fx-padding: 16 24;">
+            <children>
+                <ImageView fitHeight="74.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/mcdonalds-png-logo-2772.png" />
+                    </image>
+                    <effect>
+                        <DropShadow height="13.0" radius="6.0" width="13.0" />
+                    </effect>
+                </ImageView>
+                <Label layoutX="80.0" layoutY="13.0" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 0 20;" text="Order Type">
+                    <font>
+                        <Font name="Segoe UI Black" size="36" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Left Sidebar with Back Button -->
+    <left>
+        <VBox spacing="16" style="-fx-background-color:white;-fx-padding:32;">
+            <children>
+                <VBox spacing="16">
+                    <Button fx:id="backButton" text="← Back" styleClass="back-btn"/>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <VBox alignment="CENTER" spacing="32" style="-fx-padding: 32;">
+            <children>
+                <!-- Welcome Message -->
+                <VBox alignment="CENTER" spacing="8">
+                    <Label style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Welcome to McDonald's">
+                        <font>
+                            <Font name="Segoe UI Black" size="36" />
+                        </font>
+                    </Label>
+                    <Label style="-fx-font-size: 24px; -fx-text-fill: #666666;" text="Please select your order type" />
+                </VBox>
+
+                <!-- Order Type Options -->
+                <VBox alignment="CENTER" spacing="24" style="-fx-padding: 32; -fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 25, 0, 0, 5); -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 12; -fx-min-width: 400;">
+                    <children>
+                        <Button fx:id="dineIn" style="-fx-background-color: #FFC72C; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 16 32; -fx-background-radius: 8; -fx-min-width: 300;" text="Dine In" />
+                        <Button fx:id="takeOut" style="-fx-background-color: #FFC72C; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 16 32; -fx-background-radius: 8; -fx-min-width: 300;" text="Take Out" />
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,51 @@
+==========================================
+              MCDONALD'S ORDER            
+==========================================
+
+Date: 06/29/2025 09:57:53
+Order Type: Dine In
+
+ITEMS ORDERED:
+------------------------------------------
+McCafé Capuccino               ?65.00
+  Quantity: 2
+  Subtotal: ?130.00
+------------------------------------------
+McCafé Espresso                ?65.00
+  Quantity: 2
+  Subtotal: ?130.00
+------------------------------------------
+Burger Mcdo                    ?89.00
+  Quantity: 2
+  Subtotal: ?178.00
+------------------------------------------
+Cheeseburger                   ?99.00
+  Quantity: 2
+  Subtotal: ?198.00
+------------------------------------------
+McChicken Sandwich             ?109.00
+  Quantity: 1
+  Subtotal: ?109.00
+------------------------------------------
+1pc. Chicken McDo with Rice    ?99.00
+  Quantity: 1
+  Subtotal: ?99.00
+------------------------------------------
+2pc. Chicken McDo with Rice    ?149.00
+  Quantity: 1
+  Subtotal: ?149.00
+------------------------------------------
+Crispy Chicken Fillet with Rice ?119.00
+  Quantity: 1
+  Subtotal: ?119.00
+------------------------------------------
+6pc. Chicken McNuggets with Fries ?159.00
+  Quantity: 1
+  Subtotal: ?159.00
+------------------------------------------
+Rasberry McFloat & Medium Fries Combo ?103.00
+  Quantity: 2
+  Subtotal: ?206.00
+------------------------------------------
+
+TOTAL AMOUNT: ?1477.00

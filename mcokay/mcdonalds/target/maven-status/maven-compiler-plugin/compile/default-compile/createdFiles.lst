@@ -1,0 +1,16 @@
+mcdo/controller/CheckoutController$1.class
+mcdo/model/Cart.class
+mcdo/controller/StartController.class
+mcdo/controller/MenuController.class
+mcdo/model/User.class
+mcdo/model/OrderItem.class
+mcdo/model/Product.class
+mcdo/controller/ReceiptController.class
+module-info.class
+mcdo/model/Product$Category.class
+mcdo/controller/CheckoutController.class
+mcdo/controller/SignUpController.class
+mcdo/util/Constants.class
+mcdo/service/AuthenticationService.class
+mcdo/controller/OrderTypeController.class
+mcdo/App.class

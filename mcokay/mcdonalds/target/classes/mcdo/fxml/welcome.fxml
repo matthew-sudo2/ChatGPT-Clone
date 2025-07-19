@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mcdo.controller.StartController">
+   <children>
+      <Pane prefHeight="98.0" prefWidth="1280.0" style="-fx-background-color: #FFC72C;">
+         <children>
+            <Label layoutX="94.0" layoutY="31.0" prefHeight="46.0" prefWidth="392.0" text="Mcdonald's Kiosk" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI Bold" size="38.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="85.0" fitWidth="108.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/mcdonalds-png-logo-2772.png" />
+               </image>
+               <effect>
+                  <DropShadow height="13.0" radius="6.5" width="15.0" />
+               </effect>
+            </ImageView>
+         </children>
+      </Pane>
+      <Label layoutX="454.0" layoutY="113.0" prefHeight="40.0" prefWidth="176.0" text="Welcome to" textFill="#ffc72c">
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+      </Label>
+      <Label layoutX="640.0" layoutY="113.0" prefHeight="40.0" prefWidth="176.0" text="Mcdonald's" textFill="#ffc72c">
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+      </Label>
+      <Button fx:id="loginbutton" layoutX="528.0" layoutY="521.0" mnemonicParsing="false" onAction="#loginbuttonHandler" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #FFC72C; -fx-background-radius: 10; -fx-cursor: hand;" text="Start Order" textFill="WHITE">
+         <font>
+            <Font name="Arial Bold" size="16.0" />
+         </font>
+      </Button>
+      <Label layoutX="461.0" layoutY="331.0" prefHeight="40.0" prefWidth="81.0" text="Password:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="461.0" layoutY="247.0" prefHeight="31.0" prefWidth="89.0" text="Username:" textFill="#0b0b0b">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="usernametextfield" layoutX="461.0" layoutY="284.0" prefHeight="40.0" prefWidth="320.0" style="-fx-font-size: 16px; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="passwordfield" layoutX="461.0" layoutY="371.0" prefHeight="40.0" prefWidth="320.0" style="-fx-font-size: 16px; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </PasswordField>
+      <Button fx:id="signupbutton" layoutX="592.0" layoutY="455.0" mnemonicParsing="false" style="-fx-background-color: #666666; -fx-background-radius: 10; -fx-cursor: hand;" text="Sign Up" textFill="WHITE">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label layoutX="576.0" layoutY="434.0" text="No account yet?">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
