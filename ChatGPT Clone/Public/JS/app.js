@@ -330,97 +330,6 @@ function updateChatHistory() {
 }
 
 // ====================================
-// MOBILE UTILITIES
-// ====================================
-
-function isMobile() {
-    return window.innerWidth <= 768;
-}
-
-function initializeMobile() {
-    if (isMobile()) {
-        // Add mobile sidebar toggle
-        addMobileSidebarToggle();
-        
-        // Collapse sidebar by default on mobile
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        if (sidebar && mainContent) {
-            sidebar.classList.add('collapsed');
-            mainContent.classList.add('expanded');
-        }
-        
-        // Add viewport meta tag if not present
-        if (!document.querySelector('meta[name="viewport"]')) {
-            const meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            document.head.appendChild(meta);
-        }
-    }
-}
-
-function addMobileSidebarToggle() {
-    // Create mobile toggle button
-    const toggleBtn = document.createElement('button');
-    toggleBtn.className = 'mobile-sidebar-toggle';
-    toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-    toggleBtn.onclick = toggleMobileSidebar;
-    
-    // Add to body
-    document.body.appendChild(toggleBtn);
-}
-
-function toggleMobileSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
-    
-    if (sidebar && mainContent) {
-        sidebar.classList.toggle('collapsed');
-        mainContent.classList.toggle('expanded');
-    }
-}
-
-// Handle orientation changes
-window.addEventListener('orientationchange', function() {
-    setTimeout(() => {
-        adjustTextareaHeight();
-        scrollToBottom();
-    }, 100);
-});
-
-// Handle window resize for responsive behavior
-window.addEventListener('resize', function() {
-    if (!isMobile()) {
-        // Remove mobile-specific classes on larger screens
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const toggleBtn = document.querySelector('.mobile-sidebar-toggle');
-        
-        if (sidebar && mainContent) {
-            sidebar.classList.remove('collapsed');
-            mainContent.classList.remove('expanded');
-        }
-        
-        if (toggleBtn) {
-            toggleBtn.style.display = 'none';
-        }
-    } else {
-        const toggleBtn = document.querySelector('.mobile-sidebar-toggle');
-        if (toggleBtn) {
-            toggleBtn.style.display = 'block';
-        }
-    }
-});
-
-function scrollToBottom() {
-    const chatMessages = document.getElementById('chatMessages');
-    if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-}
-
-// ====================================
 // UI UTILITIES
 // ====================================
 
@@ -528,6 +437,22 @@ function addMessageToDOM(content, isUser = false, imageData = null) {
             textDiv.innerHTML = content;
         }
         messageContent.appendChild(textDiv);
+    }
+
+    // Add copy button for assistant messages
+    if (!isUser) {
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.title = 'Copy message';
+        copyButton.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+        `;
+        
+        copyButton.addEventListener('click', () => copyMessage(copyButton, content));
+        messageContent.appendChild(copyButton);
     }
     
     message.appendChild(avatar);
@@ -823,6 +748,72 @@ async function sendMessage() {
 }
 
 // ====================================
+// COPY MESSAGE FUNCTIONALITY
+// ====================================
+
+// Copy message function
+function copyMessage(button, content) {
+    // Extract text content from HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    navigator.clipboard.writeText(textContent).then(() => {
+        // Show success state
+        button.classList.add('copied');
+        button.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+        `;
+        button.title = 'Copied!';
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+            button.classList.remove('copied');
+            button.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            `;
+            button.title = 'Copy message';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            button.classList.add('copied');
+            button.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+            `;
+            button.title = 'Copied!';
+            
+            setTimeout(() => {
+                button.classList.remove('copied');
+                button.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                `;
+                button.title = 'Copy message';
+            }, 2000);
+        } catch (err) {
+            console.error('Fallback copy failed: ', err);
+        }
+        document.body.removeChild(textArea);
+    });
+}
+
+// ====================================
 // INITIALIZATION
 // ====================================
 
@@ -830,9 +821,6 @@ function initializeApp() {
     adjustTextareaHeight();
     loadUserProfile();
     loadChats();
-    
-    // Initialize mobile features
-    initializeMobile();
     
     if (Object.keys(chats).length === 0) {
         newChat();

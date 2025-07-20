@@ -12,6 +12,11 @@ class ChatBotHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        # Add cache-busting headers for CSS and JS files
+        if self.path.endswith(('.css', '.js')):
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -41,42 +46,30 @@ class ChatBotHandler(http.server.SimpleHTTPRequestHandler):
                 import urllib.request
                 import urllib.parse
                 
-                # Check if Ollama is running first
-                try:
-                    health_check = urllib.request.urlopen('http://localhost:11434/api/version', timeout=5)
-                    if health_check.status != 200:
-                        raise Exception("Ollama not responding")
-                except:
-                    raise Exception("Ollama service not available. Please start Ollama with 'ollama serve'")
-                
                 # Prepare Ollama API request
                 if image_data:
                     # For vision requests with image
                     ollama_data = {
-                        "model": "gemma3",
+                        "model": "gemma3:latest",
                         "prompt": prompt + "\n\nIMPORTANT: Stay focused on the current topic. Maintain conversation context. Don't shift topics unless the user explicitly asks for something different.",
                         "images": [image_data],  # Base64 image
                         "stream": False,
                         "options": {
                             "temperature": 0.7,  # Lower temperature for more focused responses
                             "top_p": 0.9,
-                            "repeat_penalty": 1.1,
-                            "num_ctx": 4096,  # Increased context window
-                            "num_predict": 512  # Limit response length
+                            "repeat_penalty": 1.1
                         }
                     }
                 else:
                     # For text-only requests
                     ollama_data = {
-                        "model": "gemma3",
+                        "model": "gemma3:latest",
                         "prompt": prompt + "\n\nIMPORTANT: Stay focused on the current topic. Maintain conversation context. Don't shift topics unless the user explicitly asks for something different.",
                         "stream": False,
                         "options": {
                             "temperature": 0.7,  # Lower temperature for more focused responses
                             "top_p": 0.9,
-                            "repeat_penalty": 1.1,
-                            "num_ctx": 4096,  # Increased context window
-                            "num_predict": 512  # Limit response length
+                            "repeat_penalty": 1.1
                         }
                     }
                 
@@ -96,7 +89,7 @@ class ChatBotHandler(http.server.SimpleHTTPRequestHandler):
                 # Fallback to command line
                 try:
                     result = subprocess.run(
-                        ['ollama', 'run', 'gemma3', prompt],
+                        ['ollama', 'run', 'gemma3:latest', prompt],
                         capture_output=True,
                         text=True,
                         timeout=30,
@@ -127,9 +120,15 @@ class ChatBotHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps({'error': str(e)}).encode())
 
 if __name__ == "__main__":
-    # Set working directory to public folder for serving static files
+    # Set working directory to Public folder for serving static files
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    public_dir = os.path.join(script_dir, '..', 'public')
+    public_dir = os.path.join(script_dir, '..', 'Public')
+    
+    # Check if Public folder exists, fallback to public (lowercase)
+    if not os.path.exists(public_dir):
+        public_dir = os.path.join(script_dir, '..', 'public')
+    
+    print(f"Serving files from: {public_dir}")
     os.chdir(public_dir)
     
     with socketserver.TCPServer(("", PORT), ChatBotHandler) as httpd:

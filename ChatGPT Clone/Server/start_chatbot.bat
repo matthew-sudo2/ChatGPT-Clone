@@ -30,7 +30,7 @@ if %errorlevel% equ 0 (
 
 echo.
 echo [3/3] Starting ChatGPT Clone Server...
-cd /d "%~dp0server"
+cd /d "%~dp0"
 
 echo.
 echo ====================================
@@ -39,6 +39,8 @@ echo
 echo  Open in browser:
 echo  → http://localhost:8001/chatbot.html
 echo  → http://localhost:8001/index.html
+echo  
+echo  Files served from Public folder
 echo ====================================
 echo.
 echo Press Ctrl+C to stop the server

@@ -7,7 +7,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Inter, system-ui, sans-serif;
     background: #212121;
     color: #ffffff;
     height: 100vh;
@@ -138,7 +138,7 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #10a37f;
+    background: #6b6b6b;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -160,7 +160,7 @@ body {
 
 .user-status {
     font-size: 12px;
-    color: #10a37f;
+    color: #a0a0a0;
 }
 
 .profile-btn {
@@ -251,7 +251,7 @@ body {
 }
 
 .model-option.active {
-    background: #10a37f;
+    background: #4a4a4a;
 }
 
 .model-option:first-child {
@@ -315,7 +315,7 @@ body {
 }
 
 .user-avatar {
-    background: #10a37f;
+    background: #6b6b6b;
     color: white;
     font-size: 14px;
 }
@@ -349,9 +349,52 @@ body {
 .assistant-message-container .message-content {
     background: transparent;
     color: #ffffff;
-    padding: 0;
+    padding: 0 0 40px 0;
     border-radius: 0;
     margin-right: 8px;
+    position: relative;
+}
+
+/* Copy button styles */
+.copy-button {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(107, 107, 107, 0.8);
+    border: none;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.assistant-message-container:hover .copy-button {
+    opacity: 1;
+}
+
+.copy-button:hover {
+    background: rgba(107, 107, 107, 1);
+    transform: scale(1.05);
+}
+
+.copy-button svg {
+    width: 16px;
+    height: 16px;
+    color: #ffffff;
+}
+
+.copy-button.copied {
+    background: rgba(34, 197, 94, 0.8);
+}
+
+.copy-button.copied:hover {
+    background: rgba(34, 197, 94, 1);
 }
 
 .message-content p {
@@ -394,7 +437,7 @@ body {
     background: rgba(0, 0, 0, 0.3);
     padding: 2px 6px;
     border-radius: 4px;
-    font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 14px;
     color: #ffffff;
 }
@@ -463,18 +506,19 @@ body {
 .input-wrapper {
     background: #2a2a2a;
     border: 1px solid #4a4a4a;
-    border-radius: 12px;
+    border-radius: 24px;
     display: flex;
     align-items: flex-end;
-    min-height: 52px;
+    min-height: 100px;
     max-height: 200px;
     overflow: hidden;
-    transition: border-color 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .input-wrapper:focus-within {
-    border-color: #10a37f;
-    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
+    border-color: #6b6b6b;
+    box-shadow: 0 0 0 2px rgba(107, 107, 107, 0.2), 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 #userInput {
@@ -483,9 +527,10 @@ body {
     border: none;
     outline: none;
     color: #ffffff;
+    font-family: Inter, system-ui, sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    padding: 12px 16px;
+    padding: 18px 20px;
     resize: none;
     max-height: 168px;
     overflow-y: auto;
@@ -496,33 +541,33 @@ body {
 }
 
 .send-button {
-    background: #10a37f;
+    background: transparent;
     border: none;
-    border-radius: 6px;
-    width: 32px;
-    height: 32px;
+    border-radius: 0;
+    width: 24px;
+    height: 24px;
     margin: 10px 10px 10px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: opacity 0.2s;
     flex-shrink: 0;
 }
 
 .send-button:hover:not(:disabled) {
-    background: #0d8f6f;
+    opacity: 0.7;
 }
 
 .send-button:disabled {
-    background: #4a4a4a;
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
 .send-button svg {
-    width: 16px;
-    height: 16px;
-    color: #ffffff;
+    width: 20px;
+    height: 20px;
+    color: #a0a0a0;
 }
 
 .cancel-button {
@@ -665,180 +710,19 @@ body {
     background: #6b6b6b;
 }
 
-/* Responsive Design - Mobile First */
+/* Responsive */
 @media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-        height: 100vh;
-        overflow: hidden;
-    }
-    
     .sidebar {
-        width: 100%;
-        height: auto;
-        max-height: 40vh;
-        padding: 8px;
-        border-right: none;
-        border-bottom: 1px solid #363636;
-        overflow-y: auto;
-    }
-    
-    .main-content {
-        flex: 1;
-        min-height: 0;
-    }
-    
-    .message {
-        padding: 12px 16px;
-        gap: 12px;
-    }
-    
-    .message-container {
-        padding: 8px 16px;
-    }
-    
-    .input-area {
-        padding: 12px;
-    }
-    
-    .input-container {
-        max-width: 100%;
-    }
-    
-    .input-wrapper {
-        min-height: 44px;
-    }
-    
-    #userInput {
-        font-size: 16px; /* Prevents zoom on iOS */
-        padding: 10px 12px;
-    }
-    
-    .message-avatar {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-    }
-    
-    /* User message bubble adjustments for mobile */
-    .user-message-container .message-content {
-        max-width: 80vw;
-        font-size: 15px;
-        padding: 8px 12px;
-    }
-    
-    .assistant-message-container .message-content {
-        font-size: 15px;
-    }
-    
-    /* Mobile sidebar toggle */
-    .mobile-sidebar-toggle {
-        display: block;
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 1000;
-        background: #2a2a2a;
-        border: none;
-        color: white;
-        padding: 8px;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    
-    .sidebar.collapsed {
         display: none;
     }
     
-    .main-content.expanded {
-        width: 100%;
-    }
-    
-    /* Touch-friendly buttons */
-    .send-button {
-        width: 36px;
-        height: 36px;
-        margin: 8px;
-    }
-    
-    .new-chat-btn {
-        padding: 12px;
-        font-size: 15px;
-        min-height: 44px;
-    }
-    
-    .chat-item {
-        padding: 12px;
-        font-size: 15px;
-        min-height: 44px;
-    }
-    
-    /* Prevent horizontal scroll on mobile */
-    .chat-messages {
-        overflow-x: hidden;
-    }
-}
-
-/* Tablet adjustments */
-@media (max-width: 1024px) and (min-width: 769px) {
-    .sidebar {
-        width: 240px;
-    }
-    
     .message {
-        padding: 16px 20px;
-    }
-    
-    .user-message-container .message-content {
-        max-width: 70vw;
-    }
-}
-
-/* Very small mobile devices */
-@media (max-width: 480px) {
-    .message-container {
-        padding: 6px 12px;
-    }
-    
-    .message {
-        padding: 8px 12px;
-        gap: 8px;
-    }
-    
-    .message-avatar {
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
-    }
-    
-    .user-message-container .message-content {
-        max-width: 85vw;
-        font-size: 14px;
-        padding: 6px 10px;
-    }
-    
-    .assistant-message-container .message-content {
-        font-size: 14px;
+        padding: 16px;
+        gap: 16px;
     }
     
     .input-area {
-        padding: 8px;
-    }
-    
-    #userInput {
-        font-size: 16px;
-        padding: 8px 10px;
-    }
-}
-
-/* Landscape mobile orientation */
-@media (max-height: 500px) and (orientation: landscape) {
-    .sidebar {
-        max-height: 30vh;
-    }
-    
-    .app-container {
-        height: 100vh;
+        padding: 16px;
     }
 }
 
@@ -891,7 +775,7 @@ body.light-mode .user-info:hover {
 }
 
 body.light-mode .user-status {
-    color: #10a37f;
+    color: #666666;
 }
 
 body.light-mode .profile-btn {
@@ -935,7 +819,7 @@ body.light-mode .model-option:hover {
 }
 
 body.light-mode .model-option.active {
-    background: #10a37f;
+    background: #666666;
     color: #ffffff;
 }
 
@@ -952,7 +836,7 @@ body.light-mode .assistant-message-container {
 }
 
 body.light-mode .user-avatar {
-    background: #10a37f;
+    background: #666666;
 }
 
 body.light-mode .assistant-avatar {
@@ -973,6 +857,28 @@ body.light-mode .user-message-container .message-content {
 body.light-mode .assistant-message-container .message-content {
     background: transparent;
     color: #333333;
+    padding: 0 0 40px 0;
+}
+
+/* Light mode copy button styles */
+body.light-mode .copy-button {
+    background: rgba(102, 102, 102, 0.8);
+}
+
+body.light-mode .copy-button:hover {
+    background: rgba(102, 102, 102, 1);
+}
+
+body.light-mode .copy-button svg {
+    color: #ffffff;
+}
+
+body.light-mode .copy-button.copied {
+    background: rgba(34, 197, 94, 0.8);
+}
+
+body.light-mode .copy-button.copied:hover {
+    background: rgba(34, 197, 94, 1);
 }
 
 body.light-mode .message-content h1,
@@ -1011,13 +917,14 @@ body.light-mode .input-area {
 }
 
 body.light-mode .input-wrapper {
-    background: #f8f9fa;
-    border: 1px solid #ddd;
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 body.light-mode .input-wrapper:focus-within {
-    border-color: #10a37f;
-    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
+    border-color: #666666;
+    box-shadow: 0 0 0 2px rgba(102, 102, 102, 0.15), 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode #userInput {
@@ -1061,7 +968,7 @@ body.light-mode .cancel-button:hover {
 
 /* Typewriter Animation */
 .typewriter-cursor {
-    color: #10a37f;
+    color: #a0a0a0;
     animation: blink 1s infinite;
     font-weight: bold;
 }
@@ -1073,9 +980,4 @@ body.light-mode .cancel-button:hover {
 
 body.light-mode .typewriter-cursor {
     color: #0d8f6f;
-}
-
-/* Mobile sidebar toggle - always hidden on desktop */
-.mobile-sidebar-toggle {
-    display: none;
 }
